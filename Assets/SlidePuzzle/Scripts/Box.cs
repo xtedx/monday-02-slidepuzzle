@@ -9,6 +9,10 @@ public class Box : MonoBehaviour
     /// the id of each box, to be set in unity
     /// </summary>
     [SerializeField] public int boxNum;
+    /// <summary>
+    /// position of box in the game grid
+    /// </summary>
+    [SerializeField] public int gridIndex;
 
     /// <summary>
     /// reference to gamemanager
@@ -31,6 +35,7 @@ public class Box : MonoBehaviour
     {
         correctPos = transform.position;
         boxNum = Convert.ToInt16(gameObject.name.Substring(4, 1));
+        gridIndex = boxNum - 1;
         //Debug.Log($"object name {gameObject.name.Substring(4,1)}");
     }
 

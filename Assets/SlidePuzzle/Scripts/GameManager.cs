@@ -7,6 +7,7 @@ using Random = System.Random;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private List<Box> boxList;
+    [SerializeField] private int boxesPerRow = 3;
     [SerializeField] private float testpos;
     [SerializeField] private bool isLerp;
     /// <summary>
@@ -19,6 +20,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private List<Vector3> boxPosList;
     // Start is called before the first frame update
+    
+    
     void Start()
     {
         sanityCheck();
@@ -41,23 +44,29 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void smoketest()
     {
-        shuffleBoxes();
-        // StartCoroutine(boxList[0].moveToXZ(0,testpos, isLerp)); 
+        // shuffleBoxes();
+        // moveBoxToDown(boxList[5]);
+        // moveBoxToUp((boxList[5]));
+        // moveBoxToRight((boxList[7]));
+        // moveBoxToRight((boxList[6]));
+        // moveBoxToLeft((boxList[6]));
+        // moveBoxToLeft((boxList[7]));
+        // moveBoxToLeft((boxList[2]));
     }
 
 
     public void init()
     {
         boxPosList = new List<Vector3>(9);
-        boxPosList.Add(new Vector3(0, 0, 4));
-        boxPosList.Add(new Vector3(2, 0, 4));
-        boxPosList.Add(new Vector3(4, 0, 4));
-        boxPosList.Add(new Vector3(0, 0, 2));
-        boxPosList.Add(new Vector3(2, 0, 2));
-        boxPosList.Add(new Vector3(4, 0, 2));
-        boxPosList.Add(new Vector3(0, 0, 0));
-        boxPosList.Add(new Vector3(2, 0, 0));
-        boxPosList.Add(new Vector3(4, 0, 0));
+        boxPosList.Add(new Vector3(0, 0, 4)); //1
+        boxPosList.Add(new Vector3(2, 0, 4)); //2
+        boxPosList.Add(new Vector3(4, 0, 4)); //3
+        boxPosList.Add(new Vector3(0, 0, 2)); //4
+        boxPosList.Add(new Vector3(2, 0, 2)); //5
+        boxPosList.Add(new Vector3(4, 0, 2)); //6
+        boxPosList.Add(new Vector3(0, 0, 0)); //7
+        boxPosList.Add(new Vector3(2, 0, 0)); //8
+        boxPosList.Add(new Vector3(4, 0, 0)); //9
     }
 
     /// <summary>
@@ -82,8 +91,9 @@ public class GameManager : MonoBehaviour
     public void moveBoxToIndex(Box box, int index, bool isLerp, float speed)
     {
         box.moveToPos(boxPosList[index], isLerp, speed);
+        box.gridIndex = index;
     }
-    
+
     /// <summary>
     /// shuffle boxes positions
     /// </summary>
@@ -139,6 +149,86 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// move box down 1 grid
+    /// </summary>
+    /// <param name="box"></param>
+    /// <exception cref="Exception"></exception>
+    public void moveBoxToDown(Box box)
+    {
+        int nextIndex = box.gridIndex;
+        //no need +1 for non modulo
+        if (box.gridIndex < 6)
+        {
+            nextIndex = box.gridIndex + boxesPerRow;
+            Debug.Log($"moving from {box.gridIndex} to {nextIndex}");
+            moveBoxToIndex(box, nextIndex, isLerp, speed);
+        }
+        else
+        {
+            throw new Exception($"can't go down anymore from {box.gridIndex}");
+        }
+    }
+    
+    /// <summary>
+    /// move box up 1 grid
+    /// </summary>
+    /// <param name="box"></param>
+    /// <exception cref="Exception"></exception>
+    public void moveBoxToUp(Box box)
+    {
+        int nextIndex = 0;
+        //no need +1 for non modulo
+        if (box.gridIndex > 2)
+        {
+            nextIndex = box.gridIndex - boxesPerRow;
+            moveBoxToIndex(box, nextIndex, isLerp, speed);
+        }
+        else
+        {
+            throw new Exception($"can't go down anymore from {box.gridIndex}");
+        }
+    }
+    
+    /// <summary>
+    /// move box left 1 grid if not 1 4 7 (column 1)
+    /// </summary>
+    /// <param name="box"></param>
+    /// <exception cref="Exception"></exception>
+    public void moveBoxToLeft(Box box)
+    {
+        int nextIndex = 0;
+        //+1 to use 1 based array for modulo calculation
+        if ((box.gridIndex+1) % boxesPerRow != 1)
+        {
+            nextIndex = box.gridIndex - 1;
+            moveBoxToIndex(box, nextIndex, isLerp, speed);
+        }
+        else
+        {
+            throw new Exception($"can't go left anymore from {box.gridIndex}");
+        }
+    }
+    
+    /// <summary>
+    /// move box right 1 grid if not from 3 6 9 (col 3)
+    /// </summary>
+    /// <param name="box"></param>
+    /// <exception cref="Exception"></exception>
+    public void moveBoxToRight(Box box)
+    {
+        int nextIndex = 0;
+        //+1 to use 1 based array for modulo calculation
+        if ((box.gridIndex+1) % boxesPerRow != 0) //not 3 6 9
+        {
+            nextIndex = box.gridIndex + 1;
+            moveBoxToIndex(box, nextIndex, isLerp, speed);
+        }
+        else
+        {
+            throw new Exception($"can't go right anymore from {box.gridIndex}");
+        }
+    }
     public void debugList(List<int> list)
     {
         foreach (var i in list)
