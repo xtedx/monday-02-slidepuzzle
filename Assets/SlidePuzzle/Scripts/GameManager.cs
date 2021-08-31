@@ -22,10 +22,6 @@ public class GameManager : MonoBehaviour
     /// contains the positions of the grid 0-8
     /// </summary>
     private List<Vector3> boxPosList;
-    /// <summary>
-    /// to set screen frame rate and resolution
-    /// </summary>
-    private Settings settings;
     
     // Start is called before the first frame update
     
@@ -83,8 +79,6 @@ public class GameManager : MonoBehaviour
         boxPosList.Add(new Vector3(0, 0, 0)); //7
         boxPosList.Add(new Vector3(2, 0, 0)); //8
         boxPosList.Add(new Vector3(4, 0, 0)); //9
-
-        settings = new Settings();
     }
 
     /// <summary>
