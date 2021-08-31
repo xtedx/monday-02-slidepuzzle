@@ -104,8 +104,6 @@ public class Box : MonoBehaviour
         }
     }
 
-    
-
 
     public bool isCorrectPos()
     {

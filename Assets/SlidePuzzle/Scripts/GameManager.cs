@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = System.Random;
 
 public class GameManager : MonoBehaviour
@@ -14,18 +16,24 @@ public class GameManager : MonoBehaviour
     /// movement speed
     /// </summary>
     [SerializeField] private float speed;
-
+    [SerializeField] private GameObject menuGUI;
+    
     /// <summary>
     /// contains the positions of the grid 0-8
     /// </summary>
     private List<Vector3> boxPosList;
+    /// <summary>
+    /// to set screen frame rate and resolution
+    /// </summary>
+    private Settings settings;
+    
     // Start is called before the first frame update
     
     
     void Start()
     {
-        sanityCheck();
         init();
+        sanityCheck();
         smoketest();
         Debug.Log(isSolved());
         for (int i = 1; i < 9; i++)
@@ -36,15 +44,23 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        UIKeyPress();
     }
 
+    public void UIKeyPress()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ToggleMenu();
+        }
+    }
+    
     /// <summary>
     /// just a smoke test function to delete later
     /// </summary>
     private void smoketest()
     {
-        // shuffleBoxes();
+        shuffleBoxes();
         // moveBoxToDown(boxList[5]);
         // moveBoxToUp((boxList[5]));
         // moveBoxToRight((boxList[7]));
@@ -67,6 +83,8 @@ public class GameManager : MonoBehaviour
         boxPosList.Add(new Vector3(0, 0, 0)); //7
         boxPosList.Add(new Vector3(2, 0, 0)); //8
         boxPosList.Add(new Vector3(4, 0, 0)); //9
+
+        settings = new Settings();
     }
 
     /// <summary>
@@ -229,6 +247,25 @@ public class GameManager : MonoBehaviour
             throw new Exception($"can't go right anymore from {box.gridIndex}");
         }
     }
+
+    /// <summary>
+    /// toggles the display of menu
+    /// </summary>
+    public void ToggleMenu()
+    {
+        var current = menuGUI.activeSelf;
+        menuGUI.SetActive(!current);
+    }
+
+    /// <summary>
+    /// Quit the game application
+    /// </summary>
+    public void QuitGame()
+    {
+        Debug.Log("Quitting game...");
+        Application.Quit();
+    }
+    
     public void debugList(List<int> list)
     {
         foreach (var i in list)
