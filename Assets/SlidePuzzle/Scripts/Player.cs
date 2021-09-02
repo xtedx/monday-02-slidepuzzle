@@ -19,10 +19,13 @@ public class Player : MonoBehaviour
     private Vector3 verticalVelocity;
     private Vector3 playerKeyboardInput;
     
+    private Animator animator;
+    private float animationBlend;
     
     // Start is called before the first frame update
     void Start()
     {
+        animator = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -42,7 +45,11 @@ public class Player : MonoBehaviour
         Vector3 direction = playerKeyboardInput.normalized;
         
         //proceed only if there is input
-        if (direction.magnitude < 0.1f) return;
+        if (direction.magnitude < 0.1f)
+        {
+            animator.SetFloat(Animator.StringToHash("speed"), 0);
+            return;
+        }
 
         if (controller.isGrounded)
         {
@@ -62,6 +69,10 @@ public class Player : MonoBehaviour
         direction = turnTo(direction, true);
         controller.Move(direction * speed * Time.deltaTime);
         controller.Move(verticalVelocity * Time.deltaTime);
+        
+        //lerp to the full speed for nice blending, but doesn't seem to work well for me
+        animationBlend = Mathf.Lerp(animationBlend, speed, Time.deltaTime);
+        animator.SetFloat(Animator.StringToHash("speed"), animationBlend);
     }
 
     private Vector3 turnTo(Vector3 direction, bool isSmooth)
