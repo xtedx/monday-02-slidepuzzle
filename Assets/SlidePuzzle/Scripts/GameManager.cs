@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void smoketest()
     {
-        shuffleBoxes();
+        //shuffleBoxes();
         // moveBoxToDown(boxList[5]);
         // moveBoxToUp((boxList[5]));
         // moveBoxToRight((boxList[7]));
