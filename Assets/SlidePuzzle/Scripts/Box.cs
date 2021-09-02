@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 using UnityEngine;
+using Vector3 = UnityEngine.Vector3;
 
 public class Box : MonoBehaviour
 {
@@ -13,21 +16,102 @@ public class Box : MonoBehaviour
     /// position of box in the game grid
     /// </summary>
     [SerializeField] public int gridIndex;
-
+    /// <summary>
+    /// howFar should the player be infront of the box for detection
+    /// </summary>
+    [SerializeField] public float howFar;
+    
     /// <summary>
     /// reference to gamemanager
     /// </summary>
     [SerializeField] private GameManager _gameManager;
 
     public Vector3 correctPos;
+    public Dictionary<string, GameObject> dictQuad;
     // Start is called before the first frame update
     void Start()
     {
         sanityCheck();
         setCorrectPos();
-
+        getQuads();
     }
 
+    private void checkQuadsRaycast()
+    {
+        foreach (var pair in dictQuad)
+        {
+            var dir = pair.Key switch
+            {
+                "zp" => Vector3.forward,
+                "zn" => Vector3.back,
+                "xp" => Vector3.right,
+                "xn" => Vector3.left,
+                _ => throw new Exception($"{pair.Key} is invalid side in switch")
+            };
+            dir += pair.Value.transform.position;
+            getRaycastHit(pair.Key, pair.Value.transform.position, dir, howFar);
+            // Debug.Log($"create ray from {boxNum}.{pair.Key} {pair.Value.transform.position} to {dir}");
+        }
+    }
+
+    /// <summary>
+/// get the quads and store in in a dictionary
+/// </summary>
+/// <exception cref="Exception"></exception>
+    private void getQuads()
+    {
+        //need to get transform first because not allowed to get GameObject directly
+        var gObjs = GetComponentsInChildren<Transform>();
+        Transform[] quads = null;
+        foreach (var g in gObjs)
+        {
+            if (g.gameObject.name == "quads")
+            {
+                quads = g.GetComponentsInChildren<Transform>();
+                break;
+            }
+        }
+        //add to dictionary
+        dictQuad = new Dictionary<string, GameObject>();
+        foreach (var quad in quads)
+        {
+            if (quad.gameObject.name.StartsWith("z") || quad.gameObject.name.StartsWith("x"))
+            {
+                dictQuad.Add(quad.gameObject.name, quad.gameObject);
+            }
+        }
+        if (dictQuad.Count != 4)
+        {
+            throw new Exception($"must have 4 side objects here, but has {dictQuad.Count}");
+        }
+    }
+
+/// <summary>
+/// check if ray cast from quad to player hits
+/// </summary>
+/// <param name="name">quad name</param>
+/// <param name="from">position of ray source</param>
+/// <param name="howFar">how far from the source</param>
+/// <returns></returns>
+    public bool getRaycastHit(string name, Vector3 from, Vector3 to, float howFar)
+    {
+        RaycastHit hit;
+        // Bit shift the index of the layer to get a bit mask
+        // This would cast rays only against colliders in layer player.
+        var layerMask = 1 << LayerMask.NameToLayer("Player");
+        //if (Physics.Raycast(from, Vector3.up, out hit, howFar))
+        if (Physics.Raycast(from, to, out hit, howFar, layerMask))
+        {
+            Debug.Log($"raycast {boxNum}.{name} hits object {hit.collider.gameObject.name}");
+            Debug.DrawLine(from, hit.point, Color.green);
+        }
+        else
+        {
+            // Debug.Log($"raycast {boxNum}.{name} from {from} no hits");
+            // Debug.DrawLine(from, to, Color.blue);
+        }
+        return true;
+    }
     /// <summary>
     /// set starting position of this box as the correct position
     /// </summary>
@@ -42,7 +126,7 @@ public class Box : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        checkQuadsRaycast();
     }
 
     /// <summary>
@@ -109,4 +193,13 @@ public class Box : MonoBehaviour
     {
         return (transform.position == correctPos);
     }
+    
+    // public void OnDrawGizmos()
+    // {
+    //     Gizmos.color = Color.cyan;
+    //     Gizmos.DrawRay(new Vector3(1.0f, 1.0f, -4.1f), transform.right * howFar);
+    //     Gizmos.DrawRay(new Vector3(1.0f, 1.0f, -4.1f), transform.up * howFar);
+    //     Gizmos.DrawRay(new Vector3(1.0f, 1.0f, -4.1f), transform.forward * howFar);
+    //
+    // }
 }

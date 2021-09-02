@@ -23,12 +23,12 @@ public class Tile : MonoBehaviour
         //if (Physics.Raycast(from, Vector3.up, out hit, howFar))
         if (Physics.Raycast(from, Vector3.up, out hit, howFar, layerMask))
         {
-            Debug.Log($"raycast {gridIndex} hits object {hit.collider.gameObject.name}");
+            // Debug.Log($"raycast {gridIndex} hits object {hit.collider.gameObject.name}");
             Debug.DrawLine(from, hit.point, Color.green);
         }
         else
         {
-            Debug.DrawRay(from, Vector3.up * howFar, Color.red);
+            // Debug.DrawRay(from, Vector3.up * howFar, Color.red);
         }
         return true;
     }
