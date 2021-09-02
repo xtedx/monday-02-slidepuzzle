@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 public class Player : MonoBehaviour
 {
     [SerializeField] private CharacterController controller;
-    [SerializeField] private GameObject thirdCamera;
+    [SerializeField] private GameObject mainCamera;
     [Space]
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
@@ -17,23 +17,18 @@ public class Player : MonoBehaviour
     private float turnSmoothVelocity; // to hold temp value for angle smoothing
     
     private Vector3 verticalVelocity;
-    private float xRot;
-    private Vector2 playerMouseInput;
     private Vector3 playerKeyboardInput;
-    private CinemachineFreeLook freeLook;
     
     
     // Start is called before the first frame update
     void Start()
     {
-        freeLook = thirdCamera.GetComponent<CinemachineFreeLook>();
     }
 
     // Update is called once per frame
     void Update()
     {
         movePlayer();
-        movePlayerCamera();
     }
 
     private void movePlayer()
@@ -75,6 +70,8 @@ public class Player : MonoBehaviour
         //atan is in rad, and convert to deg by multiplying
         //use z instead of y because we don't move up
         float turnTo = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+        //make character go forward to the angle where main camera is facing.
+        turnTo += mainCamera.transform.eulerAngles.y;
 
         if (isSmooth)
         {
@@ -90,13 +87,4 @@ public class Player : MonoBehaviour
         direction = Quaternion.Euler(0, turnTo, 0) * Vector3.forward;
         return direction.normalized;
     }
-    
-    private void movePlayerCamera()
-    {
-        playerMouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        xRot -= playerMouseInput.y * sensitivity;
-        transform.Rotate(0, playerMouseInput.x * sensitivity, 0);
-        thirdCamera.transform.localRotation = Quaternion.Euler(xRot, 0, 0);
-    }
-    
 }
