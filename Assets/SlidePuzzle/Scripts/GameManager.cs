@@ -338,7 +338,7 @@ public class GameManager : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException(nameof(sideName));
         }
-        Debug.Log($"toggled the hud {box.boxNum}.{sideName} on {box.transform.position} to {isShow} at {panel.transform.position}");
+        // Debug.Log($"toggled the hud {box.boxNum}.{sideName} on {box.transform.position} to {isShow} at {panel.transform.position}");
     }
 
     /// <summary>

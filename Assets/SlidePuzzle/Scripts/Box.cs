@@ -116,14 +116,14 @@ public class Box : MonoBehaviour
         //if (Physics.Raycast(from, Vector3.up, out hit, howFar))
         if (Physics.Raycast(from, to, out hit, howFar, layerMask))
         {
-            Debug.Log($"raycast {boxNum}.{name} hits object {hit.collider.gameObject.name}");
-            Debug.DrawLine(from, hit.point, Color.green);
+            // Debug.Log($"raycast {boxNum}.{name} hits object {hit.collider.gameObject.name}");
+            // Debug.DrawLine(from, hit.point, Color.green);
             _gameManager.toggleHUD(this, name, true);
         }
         else
         {
-            Debug.Log($"raycast {boxNum}.{name} from {from} no hits");
-            Debug.DrawLine(from, to, Color.blue);
+            // Debug.Log($"raycast {boxNum}.{name} from {from} no hits");
+            // Debug.DrawLine(from, to, Color.blue);
             //_gameManager.toggleHUD(this, name, false);
         }
         return true;
