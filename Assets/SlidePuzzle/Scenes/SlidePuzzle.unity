@@ -817,7 +817,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Frame Rate (Hz):'
+  m_Text: 'Frame Rate:'
 --- !u!222 &181341941
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -984,7 +984,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 7ee4fa63c00114a6a8df9696b148e381, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5693,7 +5693,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.22617923, y: 0.006848455, z: -0.0015738948, w: 0.9740604}
+  m_LocalRotation: {x: 0.22617923, y: 0.006848448, z: -0.001573893, w: 0.9740604}
   m_LocalPosition: {x: 4, y: 2.7801142, z: -5.941143}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -5881,7 +5881,6 @@ MonoBehaviour:
   mainCamera: {fileID: 963194225}
   speed: 4
   jumpForce: 5
-  sensitivity: 1
   gravity: 9.81
   turnSmoothTime: 0.1
 --- !u!143 &1027627823
@@ -6796,7 +6795,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -8570,7 +8569,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1693805660}
-  m_LocalRotation: {x: 0.23568365, y: 0.0059119156, z: -0.0014337584, w: 0.9718108}
+  m_LocalRotation: {x: 0.23568365, y: 0.0059119035, z: -0.0014337555, w: 0.9718108}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:

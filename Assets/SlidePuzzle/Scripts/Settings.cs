@@ -12,7 +12,8 @@ public class Settings : MonoBehaviour
 {
     [SerializeField] private Dropdown ddFramerate;
     [SerializeField] private Dropdown ddResolution;
-    
+
+    private Resolution current;
     /// <summary>
     /// set a limit on framerate. why?
     /// adjust the fps to match the monitor's refresh rate
@@ -69,7 +70,9 @@ public class Settings : MonoBehaviour
         //var example = from s in allowedRes where s.refreshRate == 30 select s.height;
         //allowedRes.Where<>
         Resolution[] allowedRes = Screen.resolutions;
-        var filteredRes = from r in allowedRes where r.refreshRate == refreshRate select r; 
+        current = Screen.currentResolution;
+        
+        var filteredRes = from r in allowedRes where r.refreshRate == current.refreshRate select r; 
         return filteredRes;
     }
 
@@ -104,7 +107,7 @@ public class Settings : MonoBehaviour
     private static void ChangeResolution(Resolution res)
     {
         Debug.Log($"changing resolution to {res.height}, {res.width}, {res.refreshRate}");
-        Screen.SetResolution(res.height, res.width, true, res.refreshRate);
+        Screen.SetResolution(res.width, res.height, true, res.refreshRate);
     }
 
     /// <summary>
