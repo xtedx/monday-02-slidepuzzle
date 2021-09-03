@@ -14,6 +14,12 @@ public class Tile : MonoBehaviour
     public float howFar = 10;
     public float boxSize = 2f;
     
+    /// <summary>
+    /// use raycast from the tile below the floor, acting as a grid, to check if a box is in the tile
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="howFar"></param>
+    /// <returns></returns>
     public bool getRaycastHit(Vector3 from, float howFar)
     {
         RaycastHit hit;
@@ -33,6 +39,9 @@ public class Tile : MonoBehaviour
         return true;
     }
 
+        /// <summary>
+        /// this for debugging purpose and in design mode
+        /// </summary>
     // public void OnDrawGizmos()
     // {
     //     Gizmos.color = Color.red;

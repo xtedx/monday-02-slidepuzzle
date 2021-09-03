@@ -6,6 +6,9 @@ using System.Numerics;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
+/// <summary>
+/// represents a box/crate in the game
+/// </summary>
 public class Box : MonoBehaviour
 {
     /// <summary>
@@ -26,7 +29,14 @@ public class Box : MonoBehaviour
     /// </summary>
     [SerializeField] private GameManager _gameManager;
 
+    /// <summary>
+    /// the correct posistion for the box to be in order to be considered valid and solved
+    /// </summary>
     public Vector3 correctPos;
+    
+    /// <summary>
+    /// store the list of quads/sides of the box
+    /// </summary>
     public Dictionary<string, GameObject> dictQuad;
     // Start is called before the first frame update
     void Start()
@@ -36,6 +46,10 @@ public class Box : MonoBehaviour
         getQuads();
     }
 
+    /// <summary>
+    /// make each side of the quad to use raycast to check if player is infront of it
+    /// </summary>
+    /// <exception cref="Exception"></exception>
     private void checkQuadsRaycast()
     {
         foreach (var pair in dictQuad)
@@ -55,9 +69,9 @@ public class Box : MonoBehaviour
     }
 
     /// <summary>
-/// get the quads and store in in a dictionary
-/// </summary>
-/// <exception cref="Exception"></exception>
+    /// get the quads and store in in a dictionary
+    /// </summary>
+    /// <exception cref="Exception"></exception>
     private void getQuads()
     {
         //need to get transform first because not allowed to get GameObject directly
@@ -86,13 +100,13 @@ public class Box : MonoBehaviour
         }
     }
 
-/// <summary>
-/// check if ray cast from quad to player hits
-/// </summary>
-/// <param name="name">quad name</param>
-/// <param name="from">position of ray source</param>
-/// <param name="howFar">how far from the source</param>
-/// <returns></returns>
+    /// <summary>
+    /// check if ray cast from quad to player hits
+    /// </summary>
+    /// <param name="name">quad name</param>
+    /// <param name="from">position of ray source</param>
+    /// <param name="howFar">how far from the source</param>
+    /// <returns></returns>
     public bool getRaycastHit(string name, Vector3 from, Vector3 to, float howFar)
     {
         RaycastHit hit;
@@ -104,15 +118,18 @@ public class Box : MonoBehaviour
         {
             Debug.Log($"raycast {boxNum}.{name} hits object {hit.collider.gameObject.name}");
             Debug.DrawLine(from, hit.point, Color.green);
+            _gameManager.toggleHUD(this, name, true);
         }
         else
         {
-            // Debug.Log($"raycast {boxNum}.{name} from {from} no hits");
-            // Debug.DrawLine(from, to, Color.blue);
+            Debug.Log($"raycast {boxNum}.{name} from {from} no hits");
+            Debug.DrawLine(from, to, Color.blue);
+            //_gameManager.toggleHUD(this, name, false);
         }
         return true;
     }
-    /// <summary>
+
+/// <summary>
     /// set starting position of this box as the correct position
     /// </summary>
     private void setCorrectPos()
@@ -197,6 +214,7 @@ public class Box : MonoBehaviour
     // public void OnDrawGizmos()
     // {
     //     Gizmos.color = Color.cyan;
+    //     Gizmos.DrawRay(new Vector3(1.0f, 1.0f, -4.1f), transform.right * howFar);
     //     Gizmos.DrawRay(new Vector3(1.0f, 1.0f, -4.1f), transform.right * howFar);
     //     Gizmos.DrawRay(new Vector3(1.0f, 1.0f, -4.1f), transform.up * howFar);
     //     Gizmos.DrawRay(new Vector3(1.0f, 1.0f, -4.1f), transform.forward * howFar);

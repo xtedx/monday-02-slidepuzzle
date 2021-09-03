@@ -15,6 +15,12 @@ public class FreelookRightMouse : MonoBehaviour
         CinemachineCore.GetInputAxis = GetAxisRightClick;
     }
 
+    /// <summary>
+    /// overwrites the built in function to get input axis.
+    /// this custom function makes it possible to only move the camera with right mouse click
+    /// </summary>
+    /// <param name="axisName"></param>
+    /// <returns></returns>
     private float GetAxisRightClick(string axisName)
     {
         if (axisName.StartsWith("Mouse") && !Input.GetMouseButton((int)MouseButton.RightMouse))

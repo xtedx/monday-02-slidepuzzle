@@ -5,6 +5,9 @@ using UnityEngine;
 using System.Linq; //like sql for dot net codes
 using UnityEngine.UI;
 
+/// <summary>
+/// setting class for system settings like framerate and screen resolution
+/// </summary>
 public class Settings : MonoBehaviour
 {
     [SerializeField] private Dropdown ddFramerate;

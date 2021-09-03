@@ -6,6 +6,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = System.Random;
 
+/// <summary>
+/// controls the general flow of the game and logic
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private List<Box> boxList;
@@ -17,11 +20,15 @@ public class GameManager : MonoBehaviour
     /// </summary>
     [SerializeField] private float speed;
     [SerializeField] private GameObject menuGUI;
+    [SerializeField] private GameObject hudGUI;
+    [SerializeField] private float panelTimer = 3f;
+    
     
     /// <summary>
     /// contains the positions of the grid 0-8
     /// </summary>
     private List<Vector3> boxPosList;
+    public Dictionary<string, GameObject> dictHUD;
     
     // Start is called before the first frame update
     
@@ -79,6 +86,36 @@ public class GameManager : MonoBehaviour
         boxPosList.Add(new Vector3(0, 0, 0)); //7
         boxPosList.Add(new Vector3(2, 0, 0)); //8
         boxPosList.Add(new Vector3(4, 0, 0)); //9
+        getHUD();
+        
+    }
+
+    /// <summary>
+    /// populates the a dictionary to store the HUD panels for later use
+    /// </summary>
+    /// <exception cref="Exception"></exception>
+    public void getHUD()
+    {
+        var huds = hudGUI.GetComponentsInChildren<RectTransform>();
+        // if (huds.Length != 4)
+        // {
+        //     throw new Exception($"must have 4 side recttransform objects here, but has {huds.Length}");
+        // }
+        //add to dictionary
+        dictHUD = new Dictionary<string, GameObject>();
+        foreach (var h in huds)
+        {
+            if (h.gameObject.name.StartsWith("z") || h.gameObject.name.StartsWith("x"))
+            {
+                dictHUD.Add(h.gameObject.name, h.gameObject);
+                //disable the hud at start
+                h.gameObject.SetActive(false);
+            }
+        }
+        if (dictHUD.Count != 4)
+        {
+            throw new Exception($"must have 4 side objects here, but has {dictHUD.Count}");
+        }
     }
 
     /// <summary>
@@ -120,6 +157,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// generates a list with random number, used to shuffle the positions of the boxes
+    /// </summary>
+    /// <param name="size"></param>
+    /// <returns></returns>
     public List<int> getRandomIntList(int size)
     {
         List<int> list = new List<int>(size);
@@ -260,6 +302,94 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
     
+    /// <summary>
+    /// displays the HUD for player to interact with the box
+    /// </summary>
+    /// <param name="box"></param>
+    /// <param name="sideName"></param>
+    /// <param name="isShow"></param>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public void toggleHUD(Box box, string sideName, bool isShow)
+    {
+        var panel = dictHUD[sideName];
+        bool current = panel.activeSelf;
+        if (current == isShow) return;
+        //show/hide hud
+        panel.SetActive(isShow);
+        //set buttons function
+        setButtonFunction(panel, box);
+        //set a timer to disable menu
+        Invoke(nameof(hideHUD), panelTimer);
+        //move the hud to the box
+        switch (sideName)
+        {
+            case "zp":
+                panel.transform.position = box.transform.position + new Vector3(0, 0, 1.1f);
+                break;
+            case "zn":
+                panel.transform.position = box.transform.position + new Vector3(0, 0, -1.1f);
+                break;
+            case "xp":
+                panel.transform.position = box.transform.position + new Vector3(1.1f, 0, 0);
+                break;
+            case "xn":
+                panel.transform.position = box.transform.position + new Vector3(-1.1f, 0, 0);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(sideName));
+        }
+        Debug.Log($"toggled the hud {box.boxNum}.{sideName} on {box.transform.position} to {isShow} at {panel.transform.position}");
+    }
+
+    /// <summary>
+    /// set the function to call in each buttons of the panel, depending on the box it is representing.
+    /// </summary>
+    /// <param name="panel"></param>
+    /// <param name="box"></param>
+    /// <exception cref="Exception"></exception>
+    public void setButtonFunction(GameObject panel, Box box)
+    {
+        //set function to pass the right box
+        var buttons = panel.GetComponentsInChildren<Button>();
+        foreach (var button in buttons)
+        {
+            button.onClick.RemoveAllListeners();
+            switch (button.gameObject.name)
+            {
+                case "btnLeft":
+                    button.onClick.AddListener(delegate { moveBoxToLeft(box); });
+                    break;
+                case "btnRight":
+                    button.onClick.AddListener(delegate { moveBoxToRight(box); });
+                    break;
+                case "btnUp":
+                    button.onClick.AddListener(delegate { moveBoxToUp(box); });
+                    break;
+                case "btnDown":
+                    button.onClick.AddListener(delegate { moveBoxToDown(box); });
+                    break;
+                default:
+                    throw new Exception($"invalid side button {button.gameObject.name}");
+                    break;
+            }
+        }
+    }
+    
+    /// <summary>
+    /// hides all HUD
+    /// </summary>
+    public void hideHUD()
+    {
+        foreach (var pair in dictHUD)
+        {
+            pair.Value.SetActive(false);
+        }
+    }
+    
+    /// <summary>
+    /// debug a list
+    /// </summary>
+    /// <param name="list"></param>
     public void debugList(List<int> list)
     {
         foreach (var i in list)
